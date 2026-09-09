@@ -1,0 +1,396 @@
+import { useEffect, useState, type FormEvent } from "react";
+import {
+  Activity,
+  ArrowRight,
+  Blocks,
+  Bot,
+  Check,
+  CircleCheck,
+  Code2,
+  Fingerprint,
+  Gauge,
+  Layers3,
+  Menu,
+  Radar,
+  RadioTower,
+  Route,
+  Server,
+  ShieldCheck,
+  Star,
+  Waypoints,
+  Wrench,
+  X,
+  Zap,
+} from "lucide-react";
+import { ConsoleGallery } from "./console-gallery";
+import { CookieConsent } from "./cookie-consent";
+import { TelemetryBackdrop } from "./telemetry-backdrop";
+
+const navigation = [
+  ["Platform", "#platform"],
+  ["Console", "#console"],
+  ["Architecture", "#architecture"],
+  ["Roadmap", "#roadmap"],
+  ["Vision", "#vision"],
+] as const;
+
+const architectureSteps = [
+  ["Agent runtimes", "LangGraph, Olas, Agentverse, Virtuals and custom stacks", Bot],
+  ["SDK + adapter", "OTLP telemetry and lifecycle commands through one neutral contract", Waypoints],
+  ["Trace · Guard · Score", "Evidence, policy and trust services with an optional runtime layer", Layers3],
+  ["Provider fabric", "Identity, wallets, payments, RPC and EVM chains stay pluggable", Server],
+] as const;
+
+const roadmap = [
+  ["P0", "Foundation", "0–4 weeks", "Stable semantics and one reproducible local trace"],
+  ["P1", "Trace", "6–10 weeks", "External developers produce useful causal traces and verified outcomes"],
+  ["P2", "Guard", "8–12 weeks", "Policies prevent or escalate real execution risk"],
+  ["P3", "Score", "10–16 weeks", "Trust becomes stable, explainable and used in decisions"],
+  ["P4", "Runtime", "12–20 weeks", "Lifecycle demand proves safe reconcile and recovery workflows"],
+  ["P5", "Control Plane", "Evidence gated", "Ecosystems depend on shared operational contracts"],
+] as const;
+
+const traceBoundaries = [
+  ["Intent", Bot],
+  ["Tool", Wrench],
+  ["Guard", ShieldCheck],
+  ["RPC", RadioTower],
+  ["Outcome", CircleCheck],
+] as const;
+
+function Brand() {
+  return (
+    <span className="brand" aria-label="ChainOps">
+      <span className="brand__mark" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </span>
+      <span>
+        Chain<strong>Ops</strong>
+      </span>
+    </span>
+  );
+}
+
+function GitHubMark() {
+  return (
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true">
+      <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.87c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.35 1.09 2.92.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.55 9.55 0 0 1 12 6.82c.85 0 1.71.11 2.51.34 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.77c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
+    </svg>
+  );
+}
+
+function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const close = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, []);
+
+  return (
+    <header className="site-header">
+      <div className="header-inner">
+        <a className="brand-link" href="#top" aria-label="ChainOps home">
+          <Brand />
+        </a>
+        <nav className="desktop-nav" aria-label="Primary navigation">
+          {navigation.map(([label, href]) => (
+            <a key={href} href={href}>
+              {label}
+            </a>
+          ))}
+        </nav>
+        <div className="header-socials" aria-label="Social links coming soon">
+          <span className="social-placeholder" title="X link coming soon" aria-label="X link coming soon">X</span>
+          <span className="social-placeholder" title="GitHub link coming soon" aria-label="GitHub link coming soon"><GitHubMark /><Star size={11} /></span>
+        </div>
+        <a className="header-cta" href="#contact">
+          Contact us <ArrowRight size={16} />
+        </a>
+        <button
+          className="menu-button"
+          type="button"
+          aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((current) => !current)}
+        >
+          {menuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </div>
+      {menuOpen && (
+        <nav className="mobile-nav" aria-label="Mobile navigation">
+          {navigation.map(([label, href]) => (
+            <a key={href} href={href} onClick={() => setMenuOpen(false)}>
+              {label} <ArrowRight size={16} />
+            </a>
+          ))}
+          <a href="#contact" onClick={() => setMenuOpen(false)}>
+            Contact us <ArrowRight size={16} />
+          </a>
+        </nav>
+      )}
+    </header>
+  );
+}
+
+function CausalRibbon() {
+  const stages = [
+    ["Intent", Bot],
+    ["Guard", ShieldCheck],
+    ["Wallet", Fingerprint],
+    ["Chain", Blocks],
+    ["Outcome", CircleCheck],
+  ] as const;
+
+  return (
+    <div className="causal-ribbon" aria-label="Verified causal trace">
+      <div className="ribbon-header">
+        <span>Verified causal trace</span>
+        <span className="live-state"><i /> live</span>
+      </div>
+      <div className="signal-track" aria-hidden="true">
+        <span className="signal-runner" />
+      </div>
+      <div className="ribbon-stages">
+        {stages.map(([label, Icon], index) => (
+          <div className="ribbon-stage" key={label}>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <Icon size={18} strokeWidth={1.7} />
+            <strong>{label}</strong>
+            <small>{index === stages.length - 1 ? "verified" : "correlated"}</small>
+          </div>
+        ))}
+      </div>
+      <div className="trace-readout">
+        <span>trace_01K47ABC9</span>
+        <span>policy.allow = true</span>
+        <span>tx.finality = 2.81s</span>
+      </div>
+    </div>
+  );
+}
+
+function ContactForm() {
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const subject = encodeURIComponent(`ChainOps inquiry from ${String(data.get("name") || "visitor")}`);
+    const body = encodeURIComponent(`Name: ${data.get("name")}\nEmail: ${data.get("email")}\nProject: ${data.get("project")}\n\n${data.get("message")}`);
+    window.location.href = `mailto:contact@chainops.live?subject=${subject}&body=${body}`;
+  };
+  return (
+    <form className="contact-form" onSubmit={submit} action="mailto:contact@chainops.live" method="post" encType="text/plain">
+      <label><span>Name</span><input name="name" autoComplete="name" required /></label>
+      <label><span>Email</span><input name="email" type="email" autoComplete="email" required /></label>
+      <label className="contact-form__wide"><span>What does your agent execute?</span><input name="project" placeholder="Payments, settlement, treasury, data acquisition..." required /></label>
+      <label className="contact-form__wide"><span>Message</span><textarea name="message" rows={5} required /></label>
+      <button className="button button--primary" type="submit">Send inquiry <ArrowRight size={17} /></button>
+    </form>
+  );
+}
+
+function App() {
+  return (
+    <div className="site-shell" id="top">
+      <TelemetryBackdrop />
+      <Header />
+      <main>
+        <section className="hero" aria-labelledby="hero-title">
+          <div className="hero-copy">
+            <p className="eyebrow"><span /> Production reliability for onchain agents</p>
+            <h1 id="hero-title">
+              Know the intent. <span>Prove the outcome.</span>
+            </h1>
+            <p className="hero-lead">
+              Trace AI intent, enforce transaction policy, and verify every onchain outcome from one causal record.
+            </p>
+            <div className="hero-actions">
+              <a className="button button--primary" href="#platform">
+                Explore ChainOps <ArrowRight size={17} />
+              </a>
+              <a className="button button--secondary" href="#architecture">
+                View architecture
+              </a>
+            </div>
+          </div>
+          <div className="hero-visual">
+            <CausalRibbon />
+          </div>
+        </section>
+
+        <section className="boundary" id="why-chainops" aria-labelledby="boundary-title">
+          <div className="section-index">The missing boundary</div>
+          <div>
+            <h2 id="boundary-title">AI observability stops before the transaction starts.</h2>
+            <p>
+              Agent traces explain a model decision. Blockchain tools explain a transaction. ChainOps connects both sides into one production truth.
+            </p>
+          </div>
+          <div className="boundary-map" aria-label="Observability gap bridged by ChainOps">
+            <span>AI intent</span>
+            <i />
+            <strong>ChainOps</strong>
+            <i />
+            <span>Onchain state</span>
+          </div>
+        </section>
+
+        <section className="platform section" id="platform" aria-labelledby="platform-title">
+          <div className="section-heading">
+            <p className="eyebrow"><span /> One reliability control plane</p>
+            <h2 id="platform-title">Trace. Guard. Score.</h2>
+            <p>Three linked systems for every autonomous operation.</p>
+          </div>
+          <div className="product-grid">
+            <article className="product-block product-block--trace">
+              <div className="product-title">
+                <Activity size={24} />
+                <span>Trace</span>
+              </div>
+              <h3>Follow causality across every boundary.</h3>
+              <p>Correlate prompts, tools, identity, payment, wallet, RPC, transaction, finality and business outcome.</p>
+              <div className="mini-trace" aria-label="Causal trace boundaries">
+                {traceBoundaries.map(([label, Icon]) => (
+                  <span key={label}><Icon size={20} strokeWidth={1.7} aria-hidden="true" />{label}</span>
+                ))}
+              </div>
+            </article>
+            <article className="product-block product-block--guard">
+              <div className="product-title"><ShieldCheck size={22} /><span>Guard</span></div>
+              <h3>Stop unsafe execution before signing.</h3>
+              <ul>
+                <li><Check size={15} /> Spend and asset limits</li>
+                <li><Check size={15} /> Contract allowlists</li>
+                <li><Check size={15} /> Human approval routes</li>
+              </ul>
+            </article>
+            <article className="product-block product-block--score">
+              <div className="product-title"><Gauge size={22} /><span>Score</span></div>
+              <h3>Turn evidence into operational trust.</h3>
+              <div className="score-line"><span>Reliability evidence</span><strong>97.4</strong></div>
+              <div className="score-meter"><i /></div>
+              <small>Derived from verified behavior, not self-reported claims.</small>
+            </article>
+          </div>
+        </section>
+
+        <section className="console-evidence section" id="console" aria-labelledby="console-title">
+          <div className="section-heading section-heading--console">
+            <p className="eyebrow"><span /> The product, already observable</p>
+            <h2 id="console-title">One control room for every autonomous operation.</h2>
+            <p>Real console views built from deterministic, cross-linked operational evidence.</p>
+          </div>
+          <ConsoleGallery />
+        </section>
+
+        <section className="architecture section" id="architecture" aria-labelledby="architecture-title">
+          <div className="architecture-copy">
+            <span className="section-index">Framework neutral by design</span>
+            <h2 id="architecture-title">A control plane above the agent stack.</h2>
+            <p>ChainOps connects external runtimes through an SDK and Runtime Adapter, then carries telemetry and control across Trace, Guard, Score and an optional Runtime. Identity, wallets, payment rails, RPC providers and EVM chains remain pluggable.</p>
+            <a className="text-link" href="#workflow">See the operator workflow <ArrowRight size={16} /></a>
+            <div className="architecture-principles">
+              <span><ShieldCheck size={16} /> Non-custodial. Signing stays provider or customer controlled.</span>
+              <span><Route size={16} /> Control Plane declares intent. Data Plane executes and reports evidence.</span>
+              <span><Activity size={16} /> OpenTelemetry carries causal context across every boundary.</span>
+            </div>
+          </div>
+          <div className="architecture-flow">
+            {architectureSteps.map(([label, copy, Icon], index) => (
+              <div className="flow-row" key={label}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <Icon size={20} />
+                <div><strong>{label}</strong><small>{copy}</small></div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="workflow section" id="workflow" aria-labelledby="workflow-title">
+          <div className="workflow-head">
+            <h2 id="workflow-title">Built for the incident, not the demo.</h2>
+            <p>Operators get one answer path when an autonomous transaction fails, drifts or violates policy.</p>
+          </div>
+          <div className="workflow-console">
+            <div className="console-bar"><span /><span /><span /><code>chainops / traces / 01K47ABC9</code></div>
+            <div className="console-grid">
+              <div className="console-event"><span>12:42:28.102</span><strong>intent.received</strong><small>Acquire verified weather data under $0.01</small></div>
+              <div className="console-event"><span>12:42:28.406</span><strong>guard.allowed</strong><small>Policy spend-limit-v4 passed</small></div>
+              <div className="console-event"><span>12:42:29.982</span><strong>transaction.finalized</strong><small>Base · 0xf93…82ac</small></div>
+              <div className="console-event console-event--verified"><span>12:42:30.912</span><strong>outcome.verified</strong><small>Dataset ownership confirmed</small></div>
+            </div>
+          </div>
+        </section>
+
+        <section className="roadmap section" id="roadmap" aria-labelledby="roadmap-title">
+          <div className="roadmap-heading">
+            <span className="section-index">Evidence-gated delivery</span>
+            <h2 id="roadmap-title">Earn the control plane, one proof at a time.</h2>
+            <p>Each release begins only after the previous layer proves real developer value. Runtime and orchestration arrive after reliability evidence, not before it.</p>
+          </div>
+          <div className="roadmap-list">
+            {roadmap.map(([phase, name, window, proof]) => (
+              <article key={phase}>
+                <span>{phase}</span>
+                <div><strong>{name}</strong><small>{window}</small></div>
+                <p>{proof}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="vision section" id="vision" aria-labelledby="vision-title">
+          <div className="vision-mark"><Radar size={30} /><span>ChainOps / long view</span></div>
+          <div>
+            <h2 id="vision-title">The operational trust layer for autonomous onchain systems.</h2>
+            <p>When agents can pay, sign and mutate shared state, observability is only the beginning. ChainOps is building the neutral reliability layer that lets teams trace intent, govern execution, verify outcomes and recover safely without taking custody of keys or funds.</p>
+          </div>
+          <div className="vision-points">
+            <span>Bring your own agent</span>
+            <span>EVM first, provider neutral</span>
+            <span>Evidence before automation</span>
+            <span>Safe recovery, never blind replay</span>
+          </div>
+        </section>
+
+        <section className="start" id="start" aria-labelledby="start-title">
+          <div>
+            <Zap size={28} />
+            <h2 id="start-title">Make autonomous execution accountable.</h2>
+          </div>
+          <p>ChainOps is preparing its first operator cohort. Tell us what your agents execute onchain.</p>
+          <a className="button button--primary" href="mailto:contact@chainops.live?subject=ChainOps%20early%20access">
+            Request access <ArrowRight size={17} />
+          </a>
+        </section>
+
+        <section className="contact section" id="contact" aria-labelledby="contact-title">
+          <div className="contact-intro">
+            <span className="section-index">Contact us</span>
+            <h2 id="contact-title">Tell us what your agents put onchain.</h2>
+            <p>Share the execution path, risk boundary or evidence gap you need ChainOps to solve.</p>
+            <a href="mailto:contact@chainops.live">contact@chainops.live</a>
+          </div>
+          <ContactForm />
+        </section>
+      </main>
+      <footer>
+        <a href="#top" aria-label="Back to top"><Brand /></a>
+        <p>Production reliability for autonomous onchain systems.</p>
+        <div className="footer-contact">
+          <a href="mailto:contact@chainops.live">contact@chainops.live</a>
+          <span>chainops.live</span>
+          <span>© ChainOps 2026</span>
+        </div>
+      </footer>
+      <CookieConsent />
+    </div>
+  );
+}
+
+export default App;
