@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import App from "./app";
 
 describe("ChainOps landing page", () => {
@@ -9,6 +9,11 @@ describe("ChainOps landing page", () => {
     document.documentElement.dataset.theme = "dark";
   });
 
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
   it("presents the complete product narrative", () => {
     render(<App />);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
@@ -16,6 +21,9 @@ describe("ChainOps landing page", () => {
     );
     expect(screen.getByRole("heading", { name: "Trace. Guard. Score." })).toBeInTheDocument();
     expect(screen.getByText("Verified causal trace")).toBeInTheDocument();
+    expect(screen.getByLabelText("ChainOps autonomous operation record")).toBeInTheDocument();
+    expect(screen.getByLabelText("Trace Guard and Score evidence")).toBeInTheDocument();
+    expect(document.querySelectorAll(".ambient-node")).toHaveLength(8);
     expect(screen.getByRole("heading", { name: /One control room/ })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Earn the control plane/ })).toBeInTheDocument();
     expect(screen.getByAltText(/ChainOps Overview console/i)).toHaveAttribute("src", "/images/console-overview.png");
@@ -29,6 +37,34 @@ describe("ChainOps landing page", () => {
       "href",
       expect.stringContaining("mailto:contact@chainops.live"),
     );
+    expect(screen.getByRole("link", { name: "ChainOps on X" })).toHaveAttribute("href", "https://x.com/ChainOps-AI");
+    expect(screen.getByRole("link", { name: "ChainOps on GitHub" })).toHaveAttribute("href", "https://github.com/ChainOps-AI");
+    expect(screen.getByRole("link", { name: "ChainOps on X" }).querySelector("svg")).toBeInTheDocument();
+  });
+
+  it("tilts the operation surface toward the pointer and resets on leave", () => {
+    render(<App />);
+    const surface = screen.getByLabelText("ChainOps autonomous operation record");
+    vi.spyOn(surface, "getBoundingClientRect").mockReturnValue({
+      left: 0,
+      top: 0,
+      width: 200,
+      height: 100,
+      right: 200,
+      bottom: 100,
+      x: 0,
+      y: 0,
+      toJSON: () => ({}),
+    });
+
+    fireEvent.pointerMove(surface, { clientX: 150, clientY: 25, pointerType: "mouse" });
+    expect(surface.style.getPropertyValue("--tilt-x")).toBe("1.50deg");
+    expect(surface.style.getPropertyValue("--tilt-y")).toBe("1.75deg");
+    expect(surface.style.getPropertyValue("--surface-x")).toBe("75.0%");
+
+    fireEvent.pointerLeave(surface, { pointerType: "mouse" });
+    expect(surface.style.getPropertyValue("--tilt-x")).toBe("0deg");
+    expect(surface.style.getPropertyValue("--tilt-y")).toBe("0deg");
   });
 
   it("opens, advances and dismisses the Console slideshow", () => {
@@ -86,5 +122,32 @@ describe("ChainOps landing page", () => {
     expect(document.documentElement.dataset.theme).toBe("light");
     expect(window.localStorage.getItem("chainops-landing-theme")).toBe("light");
     expect(screen.getByRole("button", { name: "Switch to dark mode" })).toBeInTheDocument();
+  });
+
+  it("reveals the scroll-to-top control after the hero leaves view", () => {
+    const observers: Array<{ callback: IntersectionObserverCallback; elements: Element[] }> = [];
+    class MockIntersectionObserver {
+      callback: IntersectionObserverCallback;
+      elements: Element[] = [];
+      constructor(callback: IntersectionObserverCallback) {
+        this.callback = callback;
+        observers.push(this);
+      }
+      observe(element: Element) { this.elements.push(element); }
+      unobserve() {}
+      disconnect() {}
+    }
+    vi.stubGlobal("IntersectionObserver", MockIntersectionObserver);
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
+    const { container } = render(<App />);
+    const button = container.querySelector<HTMLButtonElement>(".scroll-to-top")!;
+    const hero = container.querySelector(".hero")!;
+    const topObserver = observers.find((observer) => observer.elements.includes(hero))!;
+
+    expect(button).toHaveAttribute("aria-hidden", "true");
+    act(() => topObserver.callback([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver));
+    expect(button).toHaveAttribute("aria-hidden", "false");
+    fireEvent.click(button);
+    expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" });
   });
 });

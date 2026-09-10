@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent, type PointerEvent as ReactPointerEvent } from "react";
 import {
   Activity,
   ArrowRight,
@@ -7,7 +7,6 @@ import {
   Check,
   CircleCheck,
   Code2,
-  Fingerprint,
   Gauge,
   Layers3,
   Menu,
@@ -26,6 +25,7 @@ import {
 } from "lucide-react";
 import { ConsoleGallery } from "./console-gallery";
 import { CookieConsent } from "./cookie-consent";
+import { ScrollToTop, useScrollReveals } from "./scroll-effects";
 import { TelemetryBackdrop } from "./telemetry-backdrop";
 
 const navigation = [
@@ -63,7 +63,7 @@ const traceBoundaries = [
 function Brand() {
   return (
     <span className="brand" aria-label="ChainOps">
-      <span className="brand__mark" aria-hidden="true">
+      <span className="brand-mark" aria-hidden="true">
         <i />
         <i />
         <i />
@@ -79,6 +79,14 @@ function GitHubMark() {
   return (
     <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true">
       <path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.87c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.35 1.09 2.92.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.55 9.55 0 0 1 12 6.82c.85 0 1.71.11 2.51.34 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.77c0 .27.18.58.69.48A10 10 0 0 0 12 2Z" />
+    </svg>
+  );
+}
+
+function XMark() {
+  return (
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true">
+      <path d="M18.24 2H21l-6.03 6.9L22.06 22H16.5l-4.35-5.69L7.18 22H4.41l6.45-7.37L4.06 2h5.7l3.93 5.2L18.24 2Zm-.97 17.7h1.53L8.93 4.18H7.29L17.27 19.7Z" />
     </svg>
   );
 }
@@ -117,9 +125,9 @@ function Header() {
             </a>
           ))}
         </nav>
-        <div className="header-socials" aria-label="Social links coming soon">
-          <span className="social-placeholder" title="X link coming soon" aria-label="X link coming soon">X</span>
-          <span className="social-placeholder" title="GitHub link coming soon" aria-label="GitHub link coming soon"><GitHubMark /><Star size={11} /></span>
+        <div className="header-socials" aria-label="ChainOps social links">
+          <a className="social-link" href="https://x.com/ChainOps-AI" target="_blank" rel="noopener noreferrer" title="ChainOps on X" aria-label="ChainOps on X"><XMark /></a>
+          <a className="social-link social-link--github" href="https://github.com/ChainOps-AI" target="_blank" rel="noopener noreferrer" title="ChainOps on GitHub" aria-label="ChainOps on GitHub"><GitHubMark /><Star size={11} /></a>
         </div>
         <button
           className="theme-button"
@@ -159,38 +167,92 @@ function Header() {
   );
 }
 
-function CausalRibbon() {
+function OperationSurface() {
   const stages = [
     ["Intent", Bot],
+    ["Tool", Wrench],
     ["Guard", ShieldCheck],
-    ["Wallet", Fingerprint],
-    ["Chain", Blocks],
+    ["Transaction", Blocks],
     ["Outcome", CircleCheck],
   ] as const;
 
+  const updateTilt = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === "touch") return;
+    const surface = event.currentTarget;
+    const bounds = surface.getBoundingClientRect();
+    const x = Math.min(1, Math.max(0, (event.clientX - bounds.left) / bounds.width));
+    const y = Math.min(1, Math.max(0, (event.clientY - bounds.top) / bounds.height));
+    surface.style.setProperty("--tilt-x", `${((0.5 - y) * 6).toFixed(2)}deg`);
+    surface.style.setProperty("--tilt-y", `${((x - 0.5) * 7).toFixed(2)}deg`);
+    surface.style.setProperty("--surface-x", `${(x * 100).toFixed(1)}%`);
+    surface.style.setProperty("--surface-y", `${(y * 100).toFixed(1)}%`);
+  };
+
+  const resetTilt = (event: ReactPointerEvent<HTMLDivElement>) => {
+    event.currentTarget.style.setProperty("--tilt-x", "0deg");
+    event.currentTarget.style.setProperty("--tilt-y", "0deg");
+    event.currentTarget.style.setProperty("--surface-x", "50%");
+    event.currentTarget.style.setProperty("--surface-y", "50%");
+  };
+
   return (
-    <div className="causal-ribbon" aria-label="Verified causal trace">
-      <div className="ribbon-header">
-        <span>Verified causal trace</span>
-        <span className="live-state"><i /> live</span>
+    <div
+      className="operation-surface"
+      aria-label="ChainOps autonomous operation record"
+      onPointerMove={updateTilt}
+      onPointerLeave={resetTilt}
+    >
+      <div className="operation-header">
+        <div>
+          <span>Verified causal trace</span>
+          <strong>Autonomous operation</strong>
+        </div>
+        <span className="operation-id">01K47ABC9</span>
+        <span className="live-state"><i /> verified</span>
       </div>
-      <div className="signal-track" aria-hidden="true">
-        <span className="signal-runner" />
+
+      <div className="operation-intent">
+        <span className="operation-intent__icon"><Bot size={20} strokeWidth={1.6} /></span>
+        <div>
+          <small>Original intent</small>
+          <strong>Acquire verified weather data under $0.01</strong>
+        </div>
+        <span>research-agent · Base</span>
       </div>
-      <div className="ribbon-stages">
+
+      <div className="operation-path" aria-label="Intent to verified outcome path">
         {stages.map(([label, Icon], index) => (
-          <div className="ribbon-stage" key={label}>
+          <div className="operation-stage" key={label}>
             <span>{String(index + 1).padStart(2, "0")}</span>
             <Icon size={18} strokeWidth={1.7} />
             <strong>{label}</strong>
-            <small>{index === stages.length - 1 ? "verified" : "correlated"}</small>
+            <small>{index === 2 ? "allowed" : index === stages.length - 1 ? "verified" : "correlated"}</small>
           </div>
         ))}
       </div>
-      <div className="trace-readout">
-        <span>trace_01K47ABC9</span>
-        <span>policy.allow = true</span>
-        <span>tx.finality = 2.81s</span>
+
+      <div className="core-signals" aria-label="Trace Guard and Score evidence">
+        <div className="core-signal core-signal--trace">
+          <span><Activity size={16} /> Trace</span>
+          <strong>13 spans</strong>
+          <small>Intent to outcome · 2.81s</small>
+        </div>
+        <div className="core-signal core-signal--guard">
+          <span><ShieldCheck size={16} /> Guard</span>
+          <strong>Allowed</strong>
+          <small>spend-limit-v4 · $0.0118</small>
+        </div>
+        <div className="core-signal core-signal--score">
+          <span><Gauge size={16} /> Score</span>
+          <strong>97.4</strong>
+          <small>Outcome evidence verified</small>
+        </div>
+      </div>
+
+      <div className="operation-readout">
+        <span>tx 0xf93…82ac</span>
+        <span>finality 2.81s</span>
+        <span>outcome dataset_owned = true</span>
       </div>
     </div>
   );
@@ -216,6 +278,8 @@ function ContactForm() {
 }
 
 function App() {
+  useScrollReveals();
+
   return (
     <div className="site-shell" id="top">
       <TelemetryBackdrop />
@@ -240,11 +304,11 @@ function App() {
             </div>
           </div>
           <div className="hero-visual">
-            <CausalRibbon />
+            <OperationSurface />
           </div>
         </section>
 
-        <section className="boundary" id="why-chainops" aria-labelledby="boundary-title">
+        <section className="boundary" id="why-chainops" aria-labelledby="boundary-title" data-reveal="left">
           <div className="section-index">The missing boundary</div>
           <div>
             <h2 id="boundary-title">AI observability stops before the transaction starts.</h2>
@@ -262,12 +326,12 @@ function App() {
         </section>
 
         <section className="platform section" id="platform" aria-labelledby="platform-title">
-          <div className="section-heading">
+          <div className="section-heading" data-reveal="zoom">
             <p className="eyebrow"><span /> One reliability control plane</p>
             <h2 id="platform-title">Trace. Guard. Score.</h2>
             <p>Three linked systems for every autonomous operation.</p>
           </div>
-          <div className="product-grid">
+          <div className="product-grid" data-reveal="right">
             <article className="product-block product-block--trace">
               <div className="product-title">
                 <Activity size={24} />
@@ -301,16 +365,16 @@ function App() {
         </section>
 
         <section className="console-evidence section" id="console" aria-labelledby="console-title">
-          <div className="section-heading section-heading--console">
+          <div className="section-heading section-heading--console" data-reveal="left">
             <p className="eyebrow"><span /> The product, already observable</p>
             <h2 id="console-title">One control room for every autonomous operation.</h2>
             <p>Real console views built from deterministic, cross-linked operational evidence.</p>
           </div>
-          <ConsoleGallery />
+          <div data-reveal="zoom"><ConsoleGallery /></div>
         </section>
 
         <section className="architecture section" id="architecture" aria-labelledby="architecture-title">
-          <div className="architecture-copy">
+          <div className="architecture-copy" data-reveal="left">
             <span className="section-index">Framework neutral by design</span>
             <h2 id="architecture-title">A control plane above the agent stack.</h2>
             <p>ChainOps connects external runtimes through an SDK and Runtime Adapter, then carries telemetry and control across Trace, Guard, Score and an optional Runtime. Identity, wallets, payment rails, RPC providers and EVM chains remain pluggable.</p>
@@ -321,7 +385,7 @@ function App() {
               <span><Activity size={16} /> OpenTelemetry carries causal context across every boundary.</span>
             </div>
           </div>
-          <div className="architecture-flow">
+          <div className="architecture-flow" data-reveal="right">
             {architectureSteps.map(([label, copy, Icon], index) => (
               <div className="flow-row" key={label}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
@@ -333,11 +397,11 @@ function App() {
         </section>
 
         <section className="workflow section" id="workflow" aria-labelledby="workflow-title">
-          <div className="workflow-head">
+          <div className="workflow-head" data-reveal="zoom">
             <h2 id="workflow-title">Built for the incident, not the demo.</h2>
             <p>Operators get one answer path when an autonomous transaction fails, drifts or violates policy.</p>
           </div>
-          <div className="workflow-console">
+          <div className="workflow-console" data-reveal="up">
             <div className="console-bar"><span /><span /><span /><code>chainops / traces / 01K47ABC9</code></div>
             <div className="console-grid">
               <div className="console-event"><span>12:42:28.102</span><strong>intent.received</strong><small>Acquire verified weather data under $0.01</small></div>
@@ -349,12 +413,12 @@ function App() {
         </section>
 
         <section className="roadmap section" id="roadmap" aria-labelledby="roadmap-title">
-          <div className="roadmap-heading">
+          <div className="roadmap-heading" data-reveal="left">
             <span className="section-index">Evidence-gated delivery</span>
             <h2 id="roadmap-title">Earn the control plane, one proof at a time.</h2>
             <p>Each release begins only after the previous layer proves real developer value. Runtime and orchestration arrive after reliability evidence, not before it.</p>
           </div>
-          <div className="roadmap-list">
+          <div className="roadmap-list" data-reveal="right">
             {roadmap.map(([phase, name, window, proof]) => (
               <article key={phase}>
                 <span>{phase}</span>
@@ -366,12 +430,12 @@ function App() {
         </section>
 
         <section className="vision section" id="vision" aria-labelledby="vision-title">
-          <div className="vision-mark"><Radar size={30} /><span>ChainOps / long view</span></div>
-          <div>
+          <div className="vision-mark" data-reveal="left"><Radar size={30} /><span>ChainOps / long view</span></div>
+          <div data-reveal="zoom">
             <h2 id="vision-title">The operational trust layer for autonomous onchain systems.</h2>
             <p>When agents can pay, sign and mutate shared state, observability is only the beginning. ChainOps is building the neutral reliability layer that lets teams trace intent, govern execution, verify outcomes and recover safely without taking custody of keys or funds.</p>
           </div>
-          <div className="vision-points">
+          <div className="vision-points" data-reveal="right">
             <span>Bring your own agent</span>
             <span>EVM first, provider neutral</span>
             <span>Evidence before automation</span>
@@ -379,7 +443,7 @@ function App() {
           </div>
         </section>
 
-        <section className="start" id="start" aria-labelledby="start-title">
+        <section className="start" id="start" aria-labelledby="start-title" data-reveal="zoom">
           <div>
             <Zap size={28} />
             <h2 id="start-title">Make autonomous execution accountable.</h2>
@@ -391,13 +455,13 @@ function App() {
         </section>
 
         <section className="contact section" id="contact" aria-labelledby="contact-title">
-          <div className="contact-intro">
+          <div className="contact-intro" data-reveal="left">
             <span className="section-index">Contact us</span>
             <h2 id="contact-title">Tell us what your agents put onchain.</h2>
             <p>Share the execution path, risk boundary or evidence gap you need ChainOps to solve.</p>
             <a href="mailto:contact@chainops.live">contact@chainops.live</a>
           </div>
-          <ContactForm />
+          <div data-reveal="right"><ContactForm /></div>
         </section>
       </main>
       <footer>
@@ -410,6 +474,7 @@ function App() {
         </div>
       </footer>
       <CookieConsent />
+      <ScrollToTop />
     </div>
   );
 }
