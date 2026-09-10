@@ -11,12 +11,14 @@ import {
   Gauge,
   Layers3,
   Menu,
+  Moon,
   Radar,
   RadioTower,
   Route,
   Server,
   ShieldCheck,
   Star,
+  Sun,
   Waypoints,
   Wrench,
   X,
@@ -36,7 +38,7 @@ const navigation = [
 
 const architectureSteps = [
   ["Agent runtimes", "LangGraph, Olas, Agentverse, Virtuals and custom stacks", Bot],
-  ["SDK + adapter", "OTLP telemetry and lifecycle commands through one neutral contract", Waypoints],
+  ["SDK + Adapter", "OTLP telemetry and lifecycle commands through one neutral contract", Waypoints],
   ["Trace · Guard · Score", "Evidence, policy and trust services with an optional runtime layer", Layers3],
   ["Provider fabric", "Identity, wallets, payments, RPC and EVM chains stay pluggable", Server],
 ] as const;
@@ -83,6 +85,16 @@ function GitHubMark() {
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<"dark" | "light">(() =>
+    document.documentElement.dataset.theme === "light" ? "light" : "dark",
+  );
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    document.documentElement.dataset.theme = nextTheme;
+    try { window.localStorage.setItem("chainops-landing-theme", nextTheme); } catch { /* Theme still applies for this visit. */ }
+  };
 
   useEffect(() => {
     const close = (event: KeyboardEvent) => {
@@ -109,6 +121,15 @@ function Header() {
           <span className="social-placeholder" title="X link coming soon" aria-label="X link coming soon">X</span>
           <span className="social-placeholder" title="GitHub link coming soon" aria-label="GitHub link coming soon"><GitHubMark /><Star size={11} /></span>
         </div>
+        <button
+          className="theme-button"
+          type="button"
+          aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          onClick={toggleTheme}
+        >
+          {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
         <a className="header-cta" href="#contact">
           Contact us <ArrowRight size={16} />
         </a>

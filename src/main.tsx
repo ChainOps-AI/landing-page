@@ -5,8 +5,21 @@ import "@fontsource-variable/ibm-plex-sans";
 import App from "./app";
 import "./styles.css";
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+const root = document.getElementById("root")!;
+
+const render = () => {
+  createRoot(root).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  );
+};
+
+if (document.fonts?.load) {
+  Promise.all([
+    document.fonts.load("660 76px 'Archivo Variable'"),
+    document.fonts.load("400 18px 'IBM Plex Sans Variable'"),
+  ]).then(render, render);
+} else {
+  render();
+}

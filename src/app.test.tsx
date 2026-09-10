@@ -5,6 +5,8 @@ import App from "./app";
 describe("ChainOps landing page", () => {
   beforeEach(() => {
     window.localStorage.removeItem("chainops-cookie-consent");
+    window.localStorage.removeItem("chainops-landing-theme");
+    document.documentElement.dataset.theme = "dark";
   });
 
   it("presents the complete product narrative", () => {
@@ -75,5 +77,14 @@ describe("ChainOps landing page", () => {
     expect(screen.getByRole("navigation", { name: "Mobile navigation" })).toBeInTheDocument();
     fireEvent.keyDown(window, { key: "Escape" });
     expect(screen.queryByRole("navigation", { name: "Mobile navigation" })).not.toBeInTheDocument();
+  });
+
+  it("switches and remembers the landing color mode", () => {
+    render(<App />);
+    const toggle = screen.getByRole("button", { name: "Switch to light mode" });
+    fireEvent.click(toggle);
+    expect(document.documentElement.dataset.theme).toBe("light");
+    expect(window.localStorage.getItem("chainops-landing-theme")).toBe("light");
+    expect(screen.getByRole("button", { name: "Switch to dark mode" })).toBeInTheDocument();
   });
 });
