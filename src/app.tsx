@@ -125,31 +125,33 @@ function Header() {
             </a>
           ))}
         </nav>
-        <div className="header-socials" aria-label="ChainOps social links">
-          <a className="social-link" href="https://x.com/ChainOps-AI" target="_blank" rel="noopener noreferrer" title="ChainOps on X" aria-label="ChainOps on X"><XMark /></a>
-          <a className="social-link social-link--github" href="https://github.com/ChainOps-AI" target="_blank" rel="noopener noreferrer" title="ChainOps on GitHub" aria-label="ChainOps on GitHub"><GitHubMark /><Star size={11} /></a>
+        <div className="header-actions">
+          <div className="header-socials" aria-label="ChainOps social links">
+            <a className="social-link" href="https://x.com/ChainOps-AI" target="_blank" rel="noopener noreferrer" title="ChainOps on X" aria-label="ChainOps on X"><XMark /></a>
+            <a className="social-link social-link--github" href="https://github.com/ChainOps-AI" target="_blank" rel="noopener noreferrer" title="ChainOps on GitHub" aria-label="ChainOps on GitHub"><GitHubMark /><Star size={11} /></a>
+          </div>
+          <button
+            className="theme-button"
+            type="button"
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            onClick={toggleTheme}
+          >
+            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <a className="header-cta" href="#contact">
+            Contact us <ArrowRight size={16} />
+          </a>
+          <button
+            className="menu-button"
+            type="button"
+            aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((current) => !current)}
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
-        <button
-          className="theme-button"
-          type="button"
-          aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-          title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-          onClick={toggleTheme}
-        >
-          {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
-        <a className="header-cta" href="#contact">
-          Contact us <ArrowRight size={16} />
-        </a>
-        <button
-          className="menu-button"
-          type="button"
-          aria-label={menuOpen ? "Close navigation" : "Open navigation"}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((current) => !current)}
-        >
-          {menuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
       </div>
       {menuOpen && (
         <nav className="mobile-nav" aria-label="Mobile navigation">

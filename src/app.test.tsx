@@ -23,7 +23,7 @@ describe("ChainOps landing page", () => {
     expect(screen.getByText("Verified causal trace")).toBeInTheDocument();
     expect(screen.getByLabelText("ChainOps autonomous operation record")).toBeInTheDocument();
     expect(screen.getByLabelText("Trace Guard and Score evidence")).toBeInTheDocument();
-    expect(document.querySelectorAll(".ambient-node")).toHaveLength(8);
+    expect(document.querySelectorAll(".ambient-node")).toHaveLength(9);
     expect(screen.getByRole("heading", { name: /One control room/ })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /Earn the control plane/ })).toBeInTheDocument();
     expect(screen.getByAltText(/ChainOps Overview console/i)).toHaveAttribute("src", "/images/console-overview.png");
@@ -149,5 +149,79 @@ describe("ChainOps landing page", () => {
     expect(button).toHaveAttribute("aria-hidden", "false");
     fireEvent.click(button);
     expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" });
+  });
+
+  it("reveals sections already passed when entering through a deep link", () => {
+    const observerOptions: IntersectionObserverInit[] = [];
+    class MockIntersectionObserver {
+      constructor(_callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+        observerOptions.push(options ?? {});
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+    vi.stubGlobal("IntersectionObserver", MockIntersectionObserver);
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({
+      top: -240,
+      bottom: -120,
+      left: 0,
+      right: 600,
+      width: 600,
+      height: 120,
+      x: 0,
+      y: -240,
+      toJSON: () => ({}),
+    });
+
+    const { container } = render(<App />);
+    const architectureCopy = container.querySelector("#architecture [data-reveal]");
+    const roadmapHeading = container.querySelector("#roadmap [data-reveal]");
+    const visionMark = container.querySelector("#vision [data-reveal]");
+
+    expect(architectureCopy).toHaveClass("reveal-visible");
+    expect(roadmapHeading).toHaveClass("reveal-visible");
+    expect(visionMark).toHaveClass("reveal-visible");
+    expect(observerOptions).toContainEqual(expect.objectContaining({ rootMargin: "0px 55% -12% 55%" }));
+  });
+
+  it("reveals sections skipped by a fast scroll", () => {
+    class MockIntersectionObserver {
+      constructor(_callback: IntersectionObserverCallback) {}
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+    vi.stubGlobal("IntersectionObserver", MockIntersectionObserver);
+    const bounds = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({
+      top: 1800,
+      bottom: 1920,
+      left: 0,
+      right: 600,
+      width: 600,
+      height: 120,
+      x: 0,
+      y: 1800,
+      toJSON: () => ({}),
+    });
+
+    const { container } = render(<App />);
+    const architectureCopy = container.querySelector("#architecture [data-reveal]");
+    expect(architectureCopy).not.toHaveClass("reveal-visible");
+
+    bounds.mockReturnValue({
+      top: -400,
+      bottom: -280,
+      left: 0,
+      right: 600,
+      width: 600,
+      height: 120,
+      x: 0,
+      y: -400,
+      toJSON: () => ({}),
+    });
+    fireEvent.scroll(window);
+
+    expect(architectureCopy).toHaveClass("reveal-visible");
   });
 });

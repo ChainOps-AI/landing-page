@@ -9,22 +9,51 @@ export function useScrollReveals() {
     const elements = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
     elements.forEach((element) => element.classList.add("reveal-pending"));
 
+    const revealGroups = new Map<Element, HTMLElement[]>();
+    elements.forEach((element) => {
+      const section = element.closest("section");
+      const trigger = section && section !== element ? section : element;
+      const group = revealGroups.get(trigger) ?? [];
+      group.push(element);
+      revealGroups.set(trigger, group);
+    });
+
     const reveal = (element: HTMLElement) => {
       element.classList.add("reveal-visible");
-      observer.unobserve(element);
+    };
+
+    const revealGroup = (trigger: Element) => {
+      revealGroups.get(trigger)?.forEach(reveal);
+      observer.unobserve(trigger);
     };
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) reveal(entry.target as HTMLElement);
+          if (entry.isIntersecting) revealGroup(entry.target);
         });
       },
-      { rootMargin: "0px 0px -12%", threshold: 0.12 },
+      { rootMargin: "0px 55% -12% 55%", threshold: 0.01 },
     );
 
-    elements.forEach((element) => observer.observe(element));
-    return () => observer.disconnect();
+    revealGroups.forEach((_elements, trigger) => observer.observe(trigger));
+
+    const revealPassedElements = () => {
+      revealGroups.forEach((group, trigger) => {
+        if (group.some((element) => !element.classList.contains("reveal-visible")) && trigger.getBoundingClientRect().top < window.innerHeight * 0.88) {
+          revealGroup(trigger);
+        }
+      });
+    };
+
+    revealPassedElements();
+    window.addEventListener("scroll", revealPassedElements, { passive: true });
+    document.addEventListener("scroll", revealPassedElements, { passive: true, capture: true });
+    return () => {
+      window.removeEventListener("scroll", revealPassedElements);
+      document.removeEventListener("scroll", revealPassedElements, { capture: true });
+      observer.disconnect();
+    };
   }, []);
 }
 
