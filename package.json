@@ -10,8 +10,8 @@
     "preview": "vite preview --host 127.0.0.1 --port 4174"
   },
   "dependencies": {
-    "@fontsource-variable/archivo": "latest",
-    "@fontsource-variable/ibm-plex-sans": "latest",
+    "@fontsource-variable/rethink-sans": "^5.3.0",
+    "@fontsource/dm-mono": "^5.3.0",
     "lucide-react": "latest",
     "react": "latest",
     "react-dom": "latest"

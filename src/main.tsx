@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "@fontsource-variable/archivo";
-import "@fontsource-variable/ibm-plex-sans";
+import "@fontsource-variable/rethink-sans";
+import "@fontsource/dm-mono/400.css";
 import App from "./app";
 import "./styles.css";
 
@@ -17,8 +17,8 @@ const render = () => {
 
 if (document.fonts?.load) {
   Promise.all([
-    document.fonts.load("660 76px 'Archivo Variable'"),
-    document.fonts.load("400 18px 'IBM Plex Sans Variable'"),
+    document.fonts.load("700 76px 'Rethink Sans Variable'"),
+    document.fonts.load("400 12px 'DM Mono'"),
   ]).then(render, render);
 } else {
   render();
