@@ -63,11 +63,7 @@ const traceBoundaries = [
 function Brand() {
   return (
     <span className="brand" aria-label="ChainOps">
-      <span className="brand-mark" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-      </span>
+      <img className="brand-mark" src="/favicon.svg" alt="" aria-hidden="true" />
       <span>
         Chain<strong>Ops</strong>
       </span>

@@ -117,16 +117,9 @@ main {
 
 .header-inner { position: relative; height: 72px; display: flex; align-items: center; gap: var(--space-6); }
 .brand-link { display: inline-flex; }
-.brand { display: inline-flex; align-items: center; gap: var(--space-3); font-family: var(--display); font-size: 19px; font-weight: 520; letter-spacing: -0.035em; }
+.brand { display: inline-flex; align-items: center; gap: 2px; font-family: var(--display); font-size: 19px; font-weight: 520; letter-spacing: -0.035em; }
 .brand strong { color: var(--cyan); font-weight: 720; }
-.brand-mark { position: relative; width: 24px; height: 24px; padding: 5px; display: flex; align-items: end; gap: 2px; overflow: visible; border: 1px solid color-mix(in srgb, var(--cyan) 70%, var(--line)); border-radius: var(--radius-sm); background: transparent; }
-.brand-mark::before, .brand-mark::after { position: absolute; border: 1px solid color-mix(in srgb, var(--cyan) 40%, transparent); content: ""; pointer-events: none; }
-.brand-mark::before { inset: -4px 6px; }
-.brand-mark::after { inset: 6px -4px; }
-.brand-mark i { display: block; width: 3px; border-radius: 1px; background: var(--cyan); box-shadow: 0 0 8px color-mix(in srgb, var(--cyan) 22%, transparent); }
-.brand-mark i:nth-child(1) { height: 7px; }
-.brand-mark i:nth-child(2) { height: 13px; }
-.brand-mark i:nth-child(3) { height: 10px; }
+.brand-mark { display: block; flex: 0 0 32px; width: 32px; height: 32px; object-fit: contain; }
 
 .desktop-nav { position: absolute; left: 50%; min-height: 44px; padding: 0 var(--space-4); display: flex; align-items: center; gap: var(--space-6); border-radius: var(--radius-md); background: transparent; transform: translateX(-50%); }
 .desktop-nav a { position: relative; color: var(--text-muted); font-size: 14px; font-weight: 650; letter-spacing: 0.01em; }
