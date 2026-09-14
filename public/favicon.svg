@@ -5,7 +5,7 @@
       <rect x="8" y="8" width="24" height="24" fill="black"/>
     </mask>
   </defs>
-  <g fill="none" stroke="#0052ff" stroke-width="3" mask="url(#outer-blocks)">
+  <g fill="none" stroke="#0052ff" stroke-width="3" opacity=".58" mask="url(#outer-blocks)">
     <rect x="14" y="4" width="12" height="32" rx="2"/>
     <rect x="4" y="14" width="32" height="12" rx="2"/>
   </g>
