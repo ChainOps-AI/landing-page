@@ -16,8 +16,8 @@ describe("ChainOps landing page", () => {
 
   it("presents the complete product narrative", () => {
     render(<App />);
-    expect(document.querySelector(".brand-mark--dark")).toHaveAttribute("src", "/logo-dark.svg");
-    expect(document.querySelector(".brand-mark--light")).toHaveAttribute("src", "/logo-light.svg");
+    expect(document.querySelector(".brand-mark--dark")).toHaveAttribute("src", "/logo-dark.svg?v=15");
+    expect(document.querySelector(".brand-mark--light")).toHaveAttribute("src", "/logo-light.svg?v=15");
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Know the intent. Prove the outcome.",
     );

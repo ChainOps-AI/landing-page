@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Logo dark">
   <title>Logo dark</title>
+  <style>:root { color-scheme: light only; }</style>
   <defs>
     <linearGradient id="barGradDark" gradientUnits="userSpaceOnUse" x1="256" y1="324" x2="256" y2="184">
       <stop offset="0" stop-color="#0028A0"/>
@@ -14,10 +15,10 @@
   </defs>
   <g transform="rotate(45 256 256)">
     <g mask="url(#handleCoverDark)">
-      <rect x="181" y="58" width="150" height="86" rx="28" ry="28" fill="none" stroke="#0033B3" stroke-width="28"/>
-      <rect x="181" y="368" width="150" height="86" rx="28" ry="28" fill="none" stroke="#0033B3" stroke-width="28"/>
-      <rect x="58" y="181" width="86" height="150" rx="28" ry="28" fill="none" stroke="#0033B3" stroke-width="28"/>
-      <rect x="368" y="181" width="86" height="150" rx="28" ry="28" fill="none" stroke="#0033B3" stroke-width="28"/>
+      <rect x="181" y="58" width="150" height="86" rx="28" ry="28" fill="none" stroke="#76A0FF" stroke-width="28"/>
+      <rect x="181" y="368" width="150" height="86" rx="28" ry="28" fill="none" stroke="#76A0FF" stroke-width="28"/>
+      <rect x="58" y="181" width="86" height="150" rx="28" ry="28" fill="none" stroke="#76A0FF" stroke-width="28"/>
+      <rect x="368" y="181" width="86" height="150" rx="28" ry="28" fill="none" stroke="#76A0FF" stroke-width="28"/>
     </g>
     <rect x="118" y="118" width="276" height="276" rx="40" ry="40" fill="none" stroke="#0062FF" stroke-width="44"/>
   </g>

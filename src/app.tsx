@@ -63,8 +63,8 @@ const traceBoundaries = [
 function Brand() {
   return (
     <span className="brand" aria-label="ChainOps">
-      <img className="brand-mark brand-mark--dark" src="/logo-dark.svg" alt="" aria-hidden="true" />
-      <img className="brand-mark brand-mark--light" src="/logo-light.svg" alt="" aria-hidden="true" />
+      <img className="brand-mark brand-mark--dark" src="/logo-dark.svg?v=15" alt="" aria-hidden="true" />
+      <img className="brand-mark brand-mark--light" src="/logo-light.svg?v=15" alt="" aria-hidden="true" />
       <span>
         Chain<strong>Ops</strong>
       </span>
@@ -73,8 +73,13 @@ function Brand() {
 }
 
 function setThemeFavicon(theme: "dark" | "light") {
-  const favicon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
-  if (favicon) favicon.href = theme === "light" ? "/logo-light.svg?v=10" : "/logo-dark.svg?v=10";
+  const href = theme === "light" ? "/logo-light.svg?v=15" : "/logo-dark.svg?v=15";
+  document.querySelectorAll('link[rel="icon"]').forEach((node) => node.remove());
+  const favicon = document.createElement("link");
+  favicon.rel = "icon";
+  favicon.type = "image/svg+xml";
+  favicon.href = href;
+  document.head.appendChild(favicon);
 }
 
 function GitHubMark() {
