@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f7f9fc" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4" />
+    <link rel="icon" type="image/svg+xml" href="/logo-light.svg?v=10" />
     <meta
       name="description"
       content="ChainOps is the production reliability layer for autonomous onchain systems. Trace intent, enforce policy, and verify outcomes."
@@ -15,7 +15,10 @@
     <title>ChainOps | Reliability for autonomous onchain systems</title>
     <script>
       try {
-        document.documentElement.dataset.theme = localStorage.getItem("chainops-landing-theme") === "dark" ? "dark" : "light";
+        var theme = localStorage.getItem("chainops-landing-theme") === "dark" ? "dark" : "light";
+        document.documentElement.dataset.theme = theme;
+        var favicon = document.querySelector('link[rel="icon"]');
+        if (favicon) favicon.href = theme === "dark" ? "/logo-dark.svg?v=10" : "/logo-light.svg?v=10";
       } catch (_) {
         document.documentElement.dataset.theme = "light";
       }

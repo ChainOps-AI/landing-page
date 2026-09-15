@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Logo light">
+  <title>Logo light</title>
+  <defs>
+    <linearGradient id="barGradLight" gradientUnits="userSpaceOnUse" x1="256" y1="324" x2="256" y2="184">
+      <stop offset="0" stop-color="#0033B8"/>
+      <stop offset="0.55" stop-color="#1A6DFF"/>
+      <stop offset="1" stop-color="#6EC4FF"/>
+    </linearGradient>
+    <mask id="handleCoverLight" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">
+      <rect x="-512" y="-512" width="1536" height="1536" fill="white"/>
+      <rect x="140" y="140" width="232" height="232" rx="18" ry="18" fill="black"/>
+    </mask>
+  </defs>
+  <g transform="rotate(45 256 256)">
+    <g mask="url(#handleCoverLight)">
+      <rect x="181" y="58" width="150" height="86" rx="28" ry="28" fill="none" stroke="#8BB6FF" stroke-width="28"/>
+      <rect x="181" y="368" width="150" height="86" rx="28" ry="28" fill="none" stroke="#8BB6FF" stroke-width="28"/>
+      <rect x="58" y="181" width="86" height="150" rx="28" ry="28" fill="none" stroke="#8BB6FF" stroke-width="28"/>
+      <rect x="368" y="181" width="86" height="150" rx="28" ry="28" fill="none" stroke="#8BB6FF" stroke-width="28"/>
+    </g>
+    <rect x="118" y="118" width="276" height="276" rx="40" ry="40" fill="none" stroke="#0062FF" stroke-width="44"/>
+  </g>
+  <rect x="191" y="228" width="32" height="92" rx="16" fill="url(#barGradLight)"/>
+  <rect x="240" y="188" width="32" height="132" rx="16" fill="url(#barGradLight)"/>
+  <rect x="289" y="208" width="32" height="112" rx="16" fill="url(#barGradLight)"/>
+</svg>

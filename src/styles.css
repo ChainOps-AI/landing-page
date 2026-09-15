@@ -120,6 +120,9 @@ main {
 .brand { display: inline-flex; align-items: center; gap: 2px; font-family: var(--display); font-size: 19px; font-weight: 520; letter-spacing: -0.035em; }
 .brand strong { color: var(--cyan); font-weight: 720; }
 .brand-mark { display: block; flex: 0 0 32px; width: 32px; height: 32px; object-fit: contain; }
+img.brand-mark--light { display: none; }
+:root[data-theme="light"] img.brand-mark--dark { display: none; }
+:root[data-theme="light"] img.brand-mark--light { display: block; }
 
 .desktop-nav { position: absolute; left: 50%; min-height: 44px; padding: 0 var(--space-4); display: flex; align-items: center; gap: var(--space-6); border-radius: var(--radius-md); background: transparent; transform: translateX(-50%); }
 .desktop-nav a { position: relative; color: var(--text-muted); font-size: 14px; font-weight: 650; letter-spacing: 0.01em; }

@@ -63,12 +63,18 @@ const traceBoundaries = [
 function Brand() {
   return (
     <span className="brand" aria-label="ChainOps">
-      <img className="brand-mark" src="/favicon.svg" alt="" aria-hidden="true" />
+      <img className="brand-mark brand-mark--dark" src="/logo-dark.svg" alt="" aria-hidden="true" />
+      <img className="brand-mark brand-mark--light" src="/logo-light.svg" alt="" aria-hidden="true" />
       <span>
         Chain<strong>Ops</strong>
       </span>
     </span>
   );
+}
+
+function setThemeFavicon(theme: "dark" | "light") {
+  const favicon = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+  if (favicon) favicon.href = theme === "light" ? "/logo-light.svg?v=10" : "/logo-dark.svg?v=10";
 }
 
 function GitHubMark() {
@@ -99,6 +105,10 @@ function Header() {
     document.documentElement.dataset.theme = nextTheme;
     try { window.localStorage.setItem("chainops-landing-theme", nextTheme); } catch { /* Theme still applies for this visit. */ }
   };
+
+  useEffect(() => {
+    setThemeFavicon(theme);
+  }, [theme]);
 
   useEffect(() => {
     const close = (event: KeyboardEvent) => {
